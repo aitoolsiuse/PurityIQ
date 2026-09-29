@@ -32,10 +32,14 @@ Recognized per-slide keys:
                     to perspective-fit onto the chosen photo's phone screen
     blur_regions  - optional "x0,y0,x1,y1;x0,y0,x1,y1" pixel boxes (in the ORIGINAL
                     downloaded photo's coordinate space) to blur out brand marks
+    photo_reference - optional one-line composition note (subject, angle, framing,
+                    setting, lighting, color mood) written from a Pinterest look;
+                    informational only, the build ignores it
 """
 import re
 
-SLIDE_KEYS = {"text", "photo_search", "photo_pin", "focus_y", "screenshot", "blur_regions"}
+SLIDE_KEYS = {"text", "photo_search", "photo_pin", "focus_y", "screenshot", "blur_regions",
+              "photo_reference"}
 
 
 def parse_brief(path):

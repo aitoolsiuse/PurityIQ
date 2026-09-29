@@ -1,0 +1,8 @@
+# PIQ-039 sources
+
+| Claim | Source | URL | Date checked |
+|---|---|---|---|
+| Alert updated September 28, 2026 with an additional product; FDA advises consumers to throw away and not buy listed ground cinnamon products (slide 1) | FDA, More Ground Cinnamon Products Added to FDA Public Health Alert (current as of 09/28/2026) | https://www.fda.gov/food/alerts-advisories-safety-information/more-ground-cinnamon-products-added-fda-public-health-alert-due-presence-elevated-levels-lead | 2026-09-29 |
+| Survey began 'Following the October 2023 recall of cinnamon apple puree and applesauce products due to elevated lead levels' (slide 2) | FDA alert concerning certain cinnamon products (current as of 03/18/2024) | https://www.fda.gov/food/alerts-advisories-safety-information/fda-alert-concerning-certain-cinnamon-products-due-presence-elevated-levels-lead | 2026-09-29 |
+| 'Under current federal law, there is no explicit requirement for manufacturers to conduct such testing' (testing of foods for infants and young children) (slide 3); 'Consumers can find lot codes listed on the product's label' (slide 5) | FDA press announcement, March 6, 2024 | https://www.fda.gov/news-events/press-announcements/fda-takes-steps-ensure-safety-cinnamon-products-sold-us | 2026-09-29 |
+| 'over 200 reports of adverse events potentially related to the cinnamon apple sauce pouches' (slide 4) | FDA post-incident response (current as of 12/12/2024) | https://www.fda.gov/food/outbreaks-foodborne-illness/post-incident-response-activities-elevated-lead-and-chromium-levels-cinnamon-applesauce-pouches | 2026-09-29 |

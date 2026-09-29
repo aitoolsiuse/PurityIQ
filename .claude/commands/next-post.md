@@ -22,14 +22,40 @@ Write briefs/PIQ-NNN-slug.md in the PIQ-001 format (id/slug/title header, `## Ca
 - Story order: 1 hook (why a parent should care — their food, their kids, their store, not a news report). 2 what it is and where it's found. 3 the divergence (who allows it, who doesn't). 4 the single strongest attributed fact. 5 what to check on the label. 6 benefit. 7 CTA (exactly: PurityIQ is coming soon. Join the list for early access. Link in bio.)
 - Plain words only: name the body ("California") not the acronym ("OEHHA"); drop units like "parts per million" and breakdown-product names from the slide text. Always keep attribution to the body that said it. One idea per slide — if a slide needs "and" to join two facts, split or cut. Shortening never changes a claim's meaning; every line still traces to its source.
 - Slide 6 names the data the story uses (residue stories: "test data"; regulatory stories: "FDA, USDA, EPA and EU records"), always ending "Tap any score to see the source."
-Caption lists the primary sources by name and ends with the hashtag line. Give each slide a `photo_search` and a `focus_y`, and on slide 6 `screenshot: assets/purityiq-scan-screen.png`. Do not set a `photo_pin` on slide 6 — `build_post.py` pulls its photo automatically from the pre-validated pool (`assets/slide6-pool/` + `reference/slide6-pool.md`); slide 6's `photo_search` is kept only as the fallback query for the rare case the pool runs dry mid-build.
+Caption lists the primary sources by name and ends with the hashtag line. Give each slide a `photo_search` and a `focus_y` (slides 1-5 and 7 also get a `photo_reference:` composition note in step e), and on slide 6 `screenshot: assets/purityiq-scan-screen.png`. Do not set a `photo_pin` on slide 6 — `build_post.py` pulls its photo automatically from the pre-validated pool (`assets/slide6-pool/` + `reference/slide6-pool.md`); slide 6's `photo_search` is kept only as the fallback query for the rare case the pool runs dry mid-build.
 Do not put URLs or any `word:` lines inside the brief's Slides section (the parser treats them as keys). Put the source table (claim | source | URL | date checked) in the companion file briefs/PIQ-NNN-slug.sources.md, and copy it to posts/<post>/sources.md after the build.
 
 ## d. Self-check before sourcing photos
 Confirm: no banned word (toxic, poison, dangerous, risk, safe, safer, unsafe, hazardous) in slides or caption, no emoji, no em dashes, no brand named in a negative context, every claim has a row in the source table, exactly 7 slides, every word cap respected (slide 1 ≤12, slides 2-5 ≤14 each, slide 6 ≤18), slide 6 matches the rule, slide 7 matches the CTA exactly, story order matches the 7-step structure above. Fix the brief and re-check until it passes.
 
 ## e. Source photos (fast, "first good fit")
-Target: under 10 minutes for this whole post. `build_post.py` does the actual
+Target: under 10 minutes for this whole post.
+
+**Per slide, except 6 (pool), in this order:**
+1. **Pinterest, look only.** Before the first run, check the Higgsfield MCP
+   tools are in the session (`mcp__claude_ai_Higgsfield__generate_image`);
+   if not, skip step 4 below and tell the user. Load the Chrome tools with
+   one ToolSearch call. In Chrome, one Pinterest search for the slide's scene
+   (e.g. "parent reading food label grocery aisle"), 30 seconds max. Pick
+   the strongest pin, and write a one-line composition note: subject, camera
+   angle, framing, setting, lighting, color mood (e.g. "close-up, woman's
+   hands holding a cereal box, eye level, blurred grocery aisle behind, warm
+   overhead light, muted tones"). Put it in the brief as `photo_reference:`
+   on that slide. Never download, save, screenshot to disk, crop or upload a
+   pin. Never log in; if Pinterest walls the results, write the note from
+   the slide text and flag it in review.md.
+2. **Envato**, via Chrome, one search written from the note (Envato rules
+   below).
+3. **API sources** (build_post.py's automatic search, or a pinned API
+   photo), queries written from the note. Take the first licensed photo
+   that matches the note and passes the OCR and visual checks.
+4. **Higgsfield text-to-image, only if nothing licensed matches.** Prompt =
+   the note's text only + "no text, no logos, no brand labels,
+   photorealistic, 4:5 vertical". Never pass a Pinterest image, URL or
+   screenshot to Higgsfield or any tool. Save the result to
+   posts/<post>/photos/envato/slideN.jpg with a slideN.json sidecar
+   (`source: higgsfield-generated`), log it in reference/used-photos.md with
+   source `higgsfield-generated`, then do the normal visual check. `build_post.py` does the actual
 resolving and logging itself (see below) — your job is just to get a decent
 `photo_search` term on each slide and a `photo_pin` when you already know
 which item you want; skip ahead to step f for most posts.
@@ -48,11 +74,8 @@ which item you want; skip ahead to step f for most posts.
   (see below). Free sources are dominated by branded shots in this
   category, exactly where the OCR filter's cursive-script blind spot bites
   hardest.
-- **Envato Elements, via Claude in Chrome** — for drink/candy/packaged-goods
-  slides always (above), or when a slide's API-picked candidate has a
-  readable brand label with no blurrable fix, a bad content fit, all 6 API
-  candidates failed the OCR filter, or for slide 6 when nothing has a
-  front-facing phone screen. Load the Chrome tools with one ToolSearch call
+- **Envato Elements, via Claude in Chrome** — searched first for every
+  slide except 6 (step 2 above), using the composition note. Load the Chrome tools with one ToolSearch call
   (tell the user to run `/chrome` if it isn't connected). One search, pick
   from the first page — no bulk downloads, never Envato's AI tools (Generate,
   Riff, AI credits — they spend credits). On the first stock download of

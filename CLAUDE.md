@@ -52,7 +52,30 @@ Target: under 10 minutes per post, end to end. Photo sourcing is "first good
 fit" — pick the first candidate that fits, has no readable brand label (or a
 blurrable one), and isn't a repeat, and move on. No runner-up comparisons, no
 written justifications, no situational sources unless nothing else works.
-Skip AI-generated images from any source.
+AI-generated images only through the Higgsfield step below; none from stock
+sites or any other tool.
+
+### Per-slide order (every slide except 6)
+
+1. **Pinterest, look only.** In Chrome, one Pinterest search for the slide's
+   scene, 30 seconds max. Pick the strongest pin and write a one-line
+   composition note: subject, camera angle, framing, setting, lighting, color
+   mood. Save it in the brief as `photo_reference:` on that slide. Never
+   download, save, screenshot to disk, crop or upload a pin. Never log in to
+   Pinterest; if it walls the results, write the note from the slide text and
+   flag it in `review.md`.
+2. **Envato first, then the API sources**, with queries written from the
+   note. Take the first licensed photo that matches the note and passes the
+   OCR and visual checks.
+3. **Higgsfield text-to-image, only if no licensed photo matches.** Prompt =
+   the note's text only + "no text, no logos, no brand labels,
+   photorealistic, 4:5 vertical". Never pass a Pinterest image, URL or
+   screenshot to Higgsfield or any other tool. Save to
+   `posts/<post>/photos/envato/slideN.jpg` with a `slideN.json` sidecar
+   (`source: higgsfield-generated`), log it in `reference/used-photos.md`
+   with source `higgsfield-generated`, then do the normal visual check.
+   Before a run, confirm the Higgsfield MCP tools exist in the session; if
+   not, skip this step and tell the user so they can connect it.
 
 - **API, in parallel, one query each** (`scripts/photo_search.py`'s
   `get_candidates()`, which `build_post.py` calls automatically — this runs
@@ -94,8 +117,8 @@ Skip AI-generated images from any source.
   that folder name is a holdover; it holds the chosen file regardless of
   which source it came from.
 
-No situational sources (USDA Flickr direct browse, Unsplash, Foodiesfeed) —
-the API-then-Envato order above covers every slide.
+No situational sources (USDA Flickr direct browse, Unsplash, Foodiesfeed).
+Pinterest is a look-only reference, never a photo source.
 
 Across all sources: no photo repeats across posts — check
 `reference/used-photos.md` before every pick, and reuse an earlier item only
@@ -105,6 +128,16 @@ topic-matched photo (a parent in the relevant aisle or with a relevant
 product) — never the same slide 7 photo twice.
 
 ### Slide 6: pre-validated photo pool, not a search
+
+**If the pool is empty (or any slide has no usable photo), plug in any
+sensible picture:** a licensed hand-holding-phone shot, or generate one with
+Higgsfield from a text-only composition note written after a look-only
+Pinterest search (prompt ends "no text, no logos, no brand labels,
+photorealistic, 4:5 vertical"; never pass a Pinterest image or URL). Check each
+generated slide-6 image at the 9:16 crop, and if the default screen detection
+misses, save a validated `slideN.quad.json` (screen corners) next to the pool
+file; `build_post.py` uses it when present. Pool #47-66 are Higgsfield images
+made this way (2026-09-29).
 
 `build_post.py` pulls slide 6's photo from `assets/slide6-pool/` +
 `reference/slide6-pool.md` instead of searching or going to Envato: it takes
@@ -128,7 +161,7 @@ holding the phone, and screen facing camera — see `reference/slide6-pool.md`
 for the exact table format to append to).
 
 **No credit lines in captions, ever.** Only use photos whose license needs no
-attribution — the sources above are all pre-restricted to that, so a correct
+attribution (or original Higgsfield generations) — the sources above are all pre-restricted to that, so a correct
 pick never needs one. Never put a "Photo: creator / license" line in a
 caption.
 

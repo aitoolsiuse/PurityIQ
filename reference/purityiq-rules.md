@@ -5,7 +5,9 @@ An iOS app that scores food from government and open-data records: USDA Pesticid
 (a) The core claim is backed by a government or open-data record that PurityIQ-style data would draw on.
 (b) A parent can check or do something about it in a grocery aisle.
 ## Verification standard
-- Every factual claim traces to a primary source: government sites (fda.gov, ecfr.gov, usda.gov, epa.gov, eur-lex.europa.eu, efsa.europa.eu, oehha.ca.gov, state legislature sites) or peer-reviewed journals. News and blogs may be used to find leads, never as the cited source.
+- Every factual claim traces to a primary source: government sites (fda.gov, ecfr.gov, usda.gov, epa.gov, eur-lex.europa.eu, efsa.europa.eu, oehha.ca.gov, state legislature sites), foreign governments and international agencies (e.g. CFIA, UK FSA, SENASA, WHO/FAO), or peer-reviewed journals. Prefer the agency record whenever one exists.
+- Stories from the last ~90 days are fair game even if already covered in the news; older-but-recent stories are often better, because final case counts, recall scope and status have settled and can be verified cleanly.
+- Cast a wide net for stories, including current news (outbreaks, recalls, import decisions, bans, trade actions), in the US first and abroad second. Reputable news reporting (wire services and established outlets such as Reuters, AP, and major national papers, plus trade press like Food Safety News) may be cited when no agency record covers a fact, and the slide or caption must name the outlet ("Reuters reports..."). Blogs, social posts and advocacy sites remain leads only. Health-risk claims still need an agency or journal source.
 - Confirm current status as of today; regulations change. If a claim can't be confirmed from a primary source, cut it.
 - Quantify exactly as the source does. Distinguish "detected" (lab-tested) from "contains" (label). Never imply a food is harmful beyond what the named body said; name the body.
 - Frame foreign rules as divergence ("the EU banned X; the US allows it"), never "stricter means better."
@@ -24,7 +26,34 @@ An iOS app that scores food from government and open-data records: USDA Pesticid
 
 ## Photo rules
 Target: under 10 minutes per post, end to end. "First good fit," not
-exhaustive comparison:
+exhaustive comparison.
+
+**Order per slide (every slide except 6, which uses the pool):**
+1. **Pinterest reference (look only).** In Chrome, one Pinterest search for
+   the slide's scene (e.g. "parent reading food label grocery aisle"), 30
+   seconds max. Pick the strongest pin and write a one-line composition note
+   from it: subject, camera angle, framing, setting, lighting, color mood
+   (e.g. "close-up, woman's hands holding a cereal box, eye level, blurred
+   grocery aisle behind, warm overhead light, muted tones"). Save it in the
+   brief as `photo_reference:` on that slide. Never download, save,
+   screenshot to disk, crop or upload the pin; it's only looked at. If
+   Pinterest shows a login wall, skip this step (never log in) and write the
+   note from the slide text instead; flag it in review.md.
+2. **Envato first, then API**, with queries written from the note (existing
+   Envato rules below). Take the first licensed photo that matches the note
+   and passes the OCR and visual checks.
+3. **Higgsfield text-to-image, only if no licensed photo matches.** The
+   prompt is ONLY the composition note's text plus "no text, no logos, no
+   brand labels, photorealistic, 4:5 vertical". Never pass a Pinterest
+   image, URL or screenshot to Higgsfield or any other tool. Save the result
+   as `posts/<post>/photos/envato/slideN.jpg` (the folder `build_post.py`
+   checks first; name is a holdover) with a `slideN.json` sidecar whose
+   `source` is `higgsfield-generated`. Log it in `reference/used-photos.md`
+   with source `higgsfield-generated`, then run the normal visual check. If
+   Higgsfield tools aren't available in the session, skip this step, use
+   licensed photos only, and tell the user.
+
+Details for each source:
 - **API, in parallel, one query each** (Pexels, Pixabay, Openverse, Wikimedia
   — `photo_search.get_candidates()` runs all four concurrently). Look at the
   top results and pick the first one that fits the slide, has no readable
@@ -59,13 +88,14 @@ exhaustive comparison:
     all for these — free sources are dominated by branded shots there, and
     this is exactly the category where the OCR filter's blind spots bite
     hardest. Search Envato Elements for these from the start.
-- **Envato Elements, via Claude in Chrome** — for drink/candy/packaged-goods
-  slides (always), or when the API auto-pick had no good fit for another
-  slide, or for the slide 6 hand-holding-phone shot if no API result has a
-  front-facing screen. One search per slide max, pick from the first page.
-  Licensed to a project named with the post ID, never use Envato AI tools.
+- **Envato Elements, via Claude in Chrome** — searched first for every
+  slide except 6, using the composition note. One search per slide max,
+  pick from the first page. Licensed to a project named with the post ID,
+  never use Envato AI tools.
 - No situational sources (dropped: USDA Flickr direct browse, Unsplash,
-  Foodiesfeed) — API-then-Envato covers every slide.
+  Foodiesfeed). Pinterest is a look-only reference, never a photo source.
+- **AI images:** only via the Higgsfield step above, from the composition
+  note's text alone. No other AI generation.
 - **Enforced, not left to memory**: `build_post.py` resolves every slide's
   photo itself and writes a minimal record to
   `posts/<post>/photos/sources_log.json` (`{"<n>": {"source", "photo_id",
@@ -84,10 +114,11 @@ exhaustive comparison:
   the last 5 posts and no unused option exists.
 - **No credit lines in captions, ever.** Only use photos whose license needs
   no attribution: Pexels License, Pixabay Content License, Envato Elements
-  license, CC0, or public domain (PDM). The sources above are pre-restricted
+  license, CC0, public domain (PDM), or original Higgsfield generations. The sources above are pre-restricted
   to exactly this, so a correct pick never needs one.
 - Show food, store aisles, labels, hands and parents. No gavels, courthouse columns, generic documents or lab glassware unless the slide is literally about that object.
-- Slide 6: a different hand-holding-phone photo every post, screen facing camera, ideally in an aisle matching the topic, with the PurityIQ app screenshot fitted on the screen. Blur the "0 of 10 free scans used this month" line until the screenshot is recaptured with the new free tier.
+- Slide 6 fallback: if the pool is empty, use any sensible hand-holding-phone photo, or generate one with Higgsfield from a text-only, Pinterest-inspired composition note (see CLAUDE.md). The same applies to any slide with no usable licensed photo.
+- Slide 6: comes from the pre-validated pool (`reference/slide6-pool.md`); no Pinterest reference, no search. A different hand-holding-phone photo every post, screen facing camera, with the PurityIQ app screenshot fitted on the screen. Blur the "0 of 10 free scans used this month" line until the screenshot is recaptured with the new free tier.
 - Slide 7: a topic-matched photo (a parent in the relevant aisle or with a relevant product), never a repeated generic portrait.
 - No readable brand labels; blur them.
 

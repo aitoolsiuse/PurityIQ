@@ -358,6 +358,7 @@ def build_slide_photo(slide, post_dir, photos_dir, candidates_dir, keep_photos=F
     n = slide["n"]
     final_path = os.path.join(photos_dir, f"slide{n}.jpg")
     reused = False  # True only for the --keep-photos branch below
+    screen_quad = None  # set from a pool photo's .quad.json sidecar, if any
 
     envato = find_envato_file(post_dir, n)
     if envato:
@@ -413,6 +414,13 @@ def build_slide_photo(slide, post_dir, photos_dir, candidates_dir, keep_photos=F
             print(f"  slide {n}: using slide6-pool photo {chosen['source']}:{chosen['id']} "
                   f"({remaining} unused left in pool)")
             shutil.copy(pool_path, final_path)
+            # Some pool photos (e.g. generated ones with very bright
+            # backgrounds) need screen corners that the default brightness
+            # threshold can't find; those ship a pre-validated quad sidecar.
+            quad_path = os.path.splitext(pool_path)[0] + ".quad.json"
+            if os.path.exists(quad_path):
+                with open(quad_path) as f:
+                    screen_quad = [tuple(p) for p in json.load(f)]
             if remaining < SLIDE6_POOL_LOW_WATERMARK:
                 log_low_slide6_pool(post_dir, remaining)
         if chosen is None:
@@ -516,7 +524,7 @@ def build_slide_photo(slide, post_dir, photos_dir, candidates_dir, keep_photos=F
 
     if slide.get("screenshot"):
         shot_path = os.path.join(REPO, slide["screenshot"])
-        screenshot_fit.composite_screenshot(final_path, shot_path, final_path)
+        screenshot_fit.composite_screenshot(final_path, shot_path, final_path, quad=screen_quad)
         print(f"    perspective-fit screenshot {slide['screenshot']}")
 
     return chosen, final_path
