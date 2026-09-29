@@ -1,0 +1,8 @@
+tmp/
+posts/
+video-sets/
+.DS_Store
+__pycache__/
+*.pyc
+.claude/scheduled_tasks.lock
+*.orig-backup
